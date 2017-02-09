@@ -1,4 +1,5 @@
 
+// Quick Find
 var QuickFind = (function() {
 
   var id = [];
@@ -27,17 +28,28 @@ var QuickFind = (function() {
 
 
 
-
+// Weighted Quick Union
 var QuickUnion = (function() {
 
-  var id = [];
+  var id = [],
+      sz = [],
+      count;
 
   function QuickUnion(n) {
+    count = n;
     for (var i = 0; i < n; i++) {
-        id[i] = i;
+      id[i] = i;
+    }
+
+    for (var i = 0; i < n; i++) {
+      sz[i] = 1;
     }
     console.log(id);
   }
+
+  QuickUnion.prototype.count = function () {
+    return count;
+  };
 
   QuickUnion.prototype.connected = function (p, q) {
     return findRoot(p) == findRoot(q);
@@ -46,8 +58,10 @@ var QuickUnion = (function() {
   QuickUnion.prototype.union = function (p, q) { //1,2
     var pRoot = findRoot(p),
         qRoot = findRoot(q);
-    id[pRoot] = qRoot;
-    console.log(id);
+    if (pRoot == qRoot) return;
+
+    if (sz[pRoot] < sz[qRoot]) { id[pRoot] = qRoot; sz[qRoot] += sz[pRoot]; }
+    else                       { id[qRoot] = pRoot; sz[pRoot] += sz[qRoot]; }
   };
 
   function findRoot (root) {
